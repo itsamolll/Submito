@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>Submito – Handcrafted Academic Documentation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (window['pdfjsLib']) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    }
+  </script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="min-h-screen text-gray-100 bg-submito">
+
+  <!-- AUTH SCREEN -->
+  <div id="authScreen" class="min-h-screen flex items-center justify-center px-4">
+    <div class="max-w-md w-full rounded-2xl border border-gray-800 bg-black/75 px-6 py-6 sm:px-8 sm:py-8 shadow-2xl">
+      <div class="flex items-center gap-3 mb-5">
+        <button id="logoBtnAuth" class="focus:outline-none">
+          <img src="logo-submito.png" alt="Submito" class="h-10 w-auto" />
+        </button>
+      </div>
+
+      <h1 class="text-xl sm:text-2xl font-semibold text-white mb-1">
+        Sign in to Submito
+      </h1>
+      <p class="text-xs sm:text-sm text-gray-400 mb-4">
+        Don’t Stress. Submito Handles The Rest.
+      </p>
+
+      <!-- Tabs -->
+      <div class="flex text-xs sm:text-sm mb-4 border border-gray-700 rounded-full overflow-hidden">
+        <button id="loginTab"
+          class="flex-1 py-2 text-center bg-emerald-500 text-black font-medium">
+          Login
+        </button>
+        <button id="signupTab"
+          class="flex-1 py-2 text-center bg-transparent text-gray-300">
+          Create new account
+        </button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="loginForm" class="space-y-4">
+        <div class="space-y-1.5">
+          <label class="text-xs text-gray-400">Mobile number</label>
+          <input id="loginMobile" type="tel"
+            class="w-full rounded-lg border border-gray-700 bg-black/60 px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-emerald-400"
+            placeholder="e.g. 9876543210" />
+        </div>
+
+        <button id="sendLoginOtp"
+          class="w-full inline-flex items-center justify-center gap-1.5 rounded-full bg-emerald-500 px-4 py-2 text-sm font-medium text-black hover:bg-emerald-400">
+          Send OTP
+        </button>
+
+        <div id="loginOtpSection" class="space-y-2 hidden">
+          <div class="space-y-1.5">
+            <label class="text-xs text-gray-400">Enter OTP</label>
+            <input id="loginOtp" type="text" maxlength="6"
+              class="w-full rounded-lg border border-gray-700 bg-black/60 px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-emerald-400"
+              placeholder="Enter 4–6 digit OTP" />
+          </div>
+          <button id="verifyLoginOtp"
+            class="w-full inline-flex items-center justify-center gap-1.5 rounded-full bg-emerald-500 px-4 py-2 text-sm font-medium text-black hover:bg-emerald-400">
+            Verify & Continue
+          </button>
+          <p class="text-[11px] text-gray-500">
+            Demo only. In production, integrate real SMS OTP (Firebase, etc.).
+          </p>
+        </div>
+
+        <div class="relative my-3">
+          <div class="border-t border-gray-800"></div>
+          <span class="absolute left-1/2 -translate-x-1/2 -top-2.5 bg-black/80 px-2 text-[10px] text-gray-500">
+            or
+          </span>
+        </div>
+
+        <button id="googleLogin"
+          class="w-full inline-flex items-center justify-center gap-2 rounded-full border border-gray-700 bg-black/60 px-4 py-2 text-sm text-gray-200 hover:border-emerald-400">
+          <span>Continue with Google</span>
+        </button>
+      </div>
+
+      <!-- SIGNUP FORM -->
+      <div id="signupForm" class="space-y-4 hidden">
+        <div class="space-y-1.5">
+          <label class="text-xs text-gray-400">Full name</label>
+          <input id="signupName" type="text"
+            class="w-full rounded-lg border border-gray-700 bg-black/60 px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-emerald-400"
+            placeholder="e.g. Rahul Sharma" />
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="text-xs text-gray-400">Mobile number</label>
+          <input id="signupMobile" type="tel"
+            class="w-full rounded-lg border border-gray-700 bg-black/60 px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-emerald-400"
+            placeholder="e.g. 9876543210" />
+        </div>
+
+        <button id="sendSignupOtp"
+          class="w-full inline-flex items-center justify-center gap-1.5 rounded-full bg-emerald-500 px-4 py-2 text-sm font-medium text-black hover:bg-emerald-400">
+          Send OTP
+        </button>
+
+        <div id="signupOtpSection" class="space-y-2 hidden">
+          <div class="space-y-1.5">
+            <label class="text-xs text-gray-400">Enter OTP</label>
+            <input id="signupOtp" type="text" maxlength="6"
+              class="w-full rounded-lg border border-gray-700 bg-black/60 px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-emerald-400"
+              placeholder="Enter 4–6 digit OTP" />
+          </div>
+          <button id="verifySignupOtp"
+            class="w-full inline-flex items-center justify-center gap-1.5 rounded-full bg-emerald-500 px-4 py-2 text-sm font-medium text-black hover:bg-emerald-400">
+            Verify & Create Account
+          </button>
+        </div>
+
+        <div class="relative my-3">
+          <div class="border-t border-gray-800"></div>
+          <span class="absolute left-1/2 -translate-x-1/2 -top-2.5 bg-black/80 px-2 text-[10px] text-gray-500">
+            or
+          </span>
+        </div>
+
+        <button id="googleSignup"
+          class="w-full inline-flex items-center justify-center gap-2 rounded-full border border-gray-700 bg-black/60 px-4 py-2 text-sm text-gray-200 hover:border-emerald-400">
+          <span>Sign up with Google</span>
+        </button>
+
+        <p class="mt-2 text-[11px] text-gray-500">
+          Demo flows only. Replace with real Firebase/Auth later.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP SCREEN -->
+  <div id="appScreen" class="hidden">
+    <!-- HEADER -->
+    <header class="border-b border-gray-800/70 bg-black/70 backdrop-blur sticky top-0 z-20">
+      <div class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
+        <button id="logoBtnApp" class="flex items-center gap-2 focus:outline-none">
+          <img src="logo-submito.png" alt="Submito" class="h-8 w-auto" />
+        </button>
+        <div class="flex items-center gap-3">
+          <span id="userGreeting" class="text-xs sm:text-sm text-gray-400"></span>
+          <button id="profileBtn"
+            class="h-8 w-8 rounded-full border border-gray-700 bg-black/70 flex items-center justify-center text-sm">
+            👤
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-6 sm:py-10">
+      <!-- HERO -->
+      <section
+        id="heroSection"
+        class="mb-8 sm:mb-10 text-center min-h-[60vh] flex flex-col items-center justify-center"
+      >
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold text-white leading-tight">
+          Welcome, <span id="heroUserName">there</span>
+        </h1>
+        <p class="mt-2 text-sm sm:text-base text-gray-300">
+          Don’t Stress. Submito Handles The Rest.
+        </p>
+        <p class="mt-3 text-sm sm:text-base text-gray-400 max-w-2xl mx-auto px-2">
+          Upload your soft copy, choose your preferred handwriting & customisations,
+          and get a neatly handcrafted document delivered securely anywhere in India.
+        </p>
+
+        <div class="mt-6 sm:mt-8 flex flex-col items-center gap-3">
+          <button
+            id="startRequestBtn"
+            class="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-6 py-2.5 text-sm sm:text-base font-medium text-black hover:bg-emerald-400"
+          >
+            📄 Submit your soft copy
+          </button>
+          <p class="text-[11px] text-gray-500 px-2">
+            3 simple steps: Details · Customisation · Delivery & Summary
+          </p>
+        </div>
+      </section>
+
+      <!-- PROFILE + ORDER HISTORY -->
+      <section id="profileSection" class="hidden mb-6 max-w-3xl mx-auto">
+        <div class="card space-y-3">
+          <h2 class="card-title">Your profile & orders</h2>
+          <div class="text-xs sm:text-sm text-gray-300 space-y-1">
+            <div><span class="text-gray-500">Name:</span> <span id="profileName">—</span></div>
+            <div><span class="text-gray-500">Mobile:</span> <span id="profileMobile">—</span></div>
+          </div>
+          <hr class="divider" />
+          <h3 class="text-xs sm:text-sm font-semibold text-gray-200">Order history</h3>
+          <div id="userOrdersList" class="space-y-2 text-xs sm:text-sm">
+            <p class="text-[11px] text-gray-500">
+              You haven’t placed any orders yet. Once you do, status (Pending / In progress / Delivered / Cancelled)
+              will appear here.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- BACK HOME -->
+      <section id="backHomeSection" class="hidden mb-4">
+        <button id="backToHomeBtn"
+          class="inline-flex items-center gap-1.5 text-xs sm:text-sm text-gray-300 hover:text-emerald-400">
+          ← Back to home
+        </button>
+      </section>
+
+      <!-- STEP INDICATORS -->
+      <section id="stepsSection" class="mb-5 sm:mb-7 hidden">
+        <div class="grid grid-cols-3 gap-3 text-xs sm:text-sm">
+          <button id="stepIndicator1"
+            class="text-left rounded-xl border px-3 py-3 flex flex-col gap-1 step-active">
+            <span class="font-medium">1 · Document details</span>
+            <span class="text-gray-500 text-[11px] sm:text-xs">Type, upload & estimate</span>
+          </button>
+          <button id="stepIndicator2"
+            class="text-left rounded-xl border px-3 py-3 flex flex-col gap-1 step-inactive">
+            <span class="font-medium">2 · Customisation</span>
+            <span class="text-gray-500 text-[11px] sm:text-xs">Pens, style & add-ons</span>
+          </button>
+          <button id="stepIndicator3"
+            class="text-left rounded-xl border px-3 py-3 flex flex-col gap-1 step-inactive">
+            <span class="font-medium">3 · Delivery & summary</span>
+            <span class="text-gray-500 text-[11px] sm:text-xs">Address & final review</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- FORM + SUMMARY GRID -->
+      <section
+        id="mainFormSection"
+        class="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)] gap-5 sm:gap-7 hidden"
+      >
+        <!-- FORM -->
+        <div class="space-y-6" id="formContainer">
+          <!-- STEP 1 -->
+          <div id="step1" class="space-y-5">
+            <div class="card">
+              <h2 class="card-title">Document details</h2>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
+                <div class="field">
+                  <label>Document type</label>
+                  <select id="docType" class="input">
+                    <option value="College assignment">College assignment</option>
+                    <option value="Report file">Report file</option>
+                    <option value="Lab file">Lab file</option>
+                    <option value="Other work">Other work</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Source type</label>
+                  <div class="input readonly">
+                    Soft copy – we’ll handwrite from your uploaded PDF.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Service speed -->
+              <div class="mt-4 space-y-2">
+                <p class="label">Service speed & pricing</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm">
+                  <button data-speed="standard" class="speed-btn chip-block chip-selected">
+                    Normal · ₹30/page · ~7 days
+                    <span class="sub">Best for routine submissions.</span>
+                  </button>
+                  <button data-speed="priority" class="speed-btn chip-block">
+                    Priority · ₹85/page · ~3 days
+                    <span class="sub">Fast track for urgent work.</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mt-4 field">
+                <label>Title / topic</label>
+                <input id="titleInput" type="text" class="input"
+                  placeholder="e.g. Physics practical record, Microprocessor viva notes" />
+              </div>
+
+              <div class="mt-4 field">
+                <label>Short description / instructions</label>
+                <textarea id="descInput" rows="3" class="input"
+                  placeholder="Mention syllabus portion, formatting needs, or specific instructions."></textarea>
+              </div>
+
+              <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="field">
+                  <label>Upload your PDF</label>
+                  <input id="fileInput" type="file" accept="application/pdf"
+                    class="input text-xs text-gray-400 file:bg-black file:border-0 file:mr-2 file:px-2 file:py-1 file:rounded file:text-[11px] file:text-gray-300" />
+                  <p id="pdfInfo" class="hint mt-1">
+                    Only PDF allowed. We’ll auto-detect pages & estimate handwritten length.
+                  </p>
+                </div>
+                <div class="field">
+                  <label>Estimated handwritten pages (auto)</label>
+                  <input id="pagesInput" type="number" min="0" value="0" readonly class="input readonly" />
+                  <p class="hint">
+                    Appears after you upload a PDF. Our team may adjust slightly after review.
+                  </p>
+                  <div class="field mt-3">
+                    <label>Max pages you want us to stay within (optional)</label>
+                    <input id="maxPagesInput" type="number" min="1" class="input" placeholder="e.g. 20" />
+                    <p class="hint">
+                      Billing is based on this cap. If we feel more pages are needed, we’ll contact you first.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- WHAT YOU GET -->
+              <div id="whatYouGet" class="mt-5 rounded-xl border border-emerald-500/40 bg-emerald-500/5 px-3 py-3">
+                <p class="text-xs font-semibold text-emerald-200 mb-1">What you get</p>
+                <ul id="whatYouGetList" class="text-[11px] text-emerald-100 space-y-1.5"></ul>
+              </div>
+            </div>
+
+            <div class="flex justify-end">
+              <button id="toStep2" class="btn-primary">
+                Next: Customisation →
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div id="step2" class="space-y-5 hidden">
+            <div class="card space-y-4">
+              <h2 class="card-title">Free customisation</h2>
+
+              <div class="space-y-2">
+                <p class="label">Pen types (you can select multiple)</p>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs sm:text-sm">
+                  <button data-pen="Blue ball pen" class="chip pen-btn">Blue ball pen</button>
+                  <button data-pen="Black ball pen" class="chip pen-btn">Black ball pen</button>
+                  <button data-pen="Blue gel pen" class="chip pen-btn">Blue gel pen</button>
+                  <button data-pen="Black gel pen" class="chip pen-btn">Black gel pen</button>
+                  <button data-pen="Pencil (for drafts)" class="chip pen-btn">Pencil</button>
+                </div>
+                <p class="hint">
+                  We can mix pens – e.g. blue for content, black for headings, pencil for diagrams.
+                </p>
+              </div>
+
+              <div class="space-y-2">
+                <p class="label">Handwriting preference</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs sm:text-sm">
+                  <button data-style="Simple & neat" class="chip-block style-btn">
+                    Simple & neat
+                    <span class="sub">Clean, readable for regular submissions.</span>
+                  </button>
+                  <button data-style="Slightly cursive" class="chip-block style-btn">
+                    Slightly cursive
+                    <span class="sub">Light stylised flow & headings.</span>
+                  </button>
+                  <button data-style="Bold & clear headings" class="chip-block style-btn">
+                    Bold & clear headings
+                    <span class="sub">Emphasis on structure and sections.</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <p class="label">Voice instructions (optional)</p>
+                <p class="hint mb-1">
+                  Prefer explaining by voice? Upload a short audio describing how you want things written.
+                </p>
+                <input id="voiceInput" type="file" accept="audio/*" class="input text-xs text-gray-400" />
+              </div>
+            </div>
+
+            <div class="card space-y-4">
+              <h2 class="card-title">Premium add-ons (optional)</h2>
+              <p class="hint">
+                Charges are for reference. You can tweak later from the admin side.
+              </p>
+
+              <div class="space-y-2 text-xs sm:text-sm">
+                <label class="addon">
+                  <input type="checkbox" class="addon-checkbox" data-name="Decorative title page" data-price="50" />
+                  <div class="flex-1">
+                    Decorative title page
+                    <span class="sub-block">Designed first page for a stronger impression.</span>
+                  </div>
+                  <span class="price">+₹50</span>
+                </label>
+
+                <label class="addon">
+                  <input type="checkbox" class="addon-checkbox" data-name="Page borders & styling" data-price="10" />
+                  <div class="flex-1">
+                    Page borders & styling
+                    <span class="sub-block">Subtle borders / dividers for a refined look.</span>
+                  </div>
+                  <span class="price">+₹10</span>
+                </label>
+
+                <label class="addon">
+                  <input type="checkbox" class="addon-checkbox" data-name="Index / contents page" data-price="10" />
+                  <div class="flex-1">
+                    Index / contents page
+                    <span class="sub-block">Organised contents list at the front.</span>
+                  </div>
+                  <span class="price">+₹10</span>
+                </label>
+
+                <label class="addon">
+                  <input type="checkbox" class="addon-checkbox" data-name="Premium packaging" data-price="90" />
+                  <div class="flex-1">
+                    Premium packaging
+                    <span class="sub-block">Neat packaging suited for gifting/formal submission.</span>
+                  </div>
+                  <span class="price">+₹90</span>
+                </label>
+
+                <label class="addon">
+                  <input type="checkbox" class="addon-checkbox" data-name="Binding" data-price="249" />
+                  <div class="flex-1">
+                    Binding
+                    <span class="sub-block">Useful for report files & large submissions.</span>
+                  </div>
+                  <span class="price">+₹249</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="flex justify-between">
+              <button id="backTo1" class="btn-ghost">← Back</button>
+              <button id="toStep3" class="btn-primary">Next: Delivery & summary →</button>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div id="step3" class="space-y-5 hidden">
+            <div class="card space-y-4">
+              <h2 class="card-title">Delivery details</h2>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                <div class="field">
+                  <label>Full name</label>
+                  <input id="nameInput" type="text" class="input" />
+                </div>
+                <div class="field">
+                  <label>Mobile / WhatsApp number</label>
+                  <input id="mobileInput" type="text" class="input" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                <div class="field">
+                  <label>City</label>
+                  <input id="cityInput" type="text" class="input" />
+                </div>
+                <div class="field">
+                  <label>State</label>
+                  <input id="stateInput" type="text" class="input" />
+                </div>
+              </div>
+
+              <div class="field mt-2">
+                <label>Full address</label>
+                <textarea id="addressInput" rows="2" class="input"></textarea>
+              </div>
+
+              <div class="field mt-2">
+                <label>Additional notes (optional)</label>
+                <textarea id="notesInput" rows="2" class="input"
+                  placeholder="Landmark, preferred delivery times, etc."></textarea>
+              </div>
+
+              <div class="mt-3 text-xs text-gray-400">
+                <label class="inline-flex items-start gap-2">
+                  <input id="termsCheckbox" type="checkbox"
+                    class="mt-0.5 rounded border-gray-600 bg-black/40" />
+                  <span>
+                    I understand this is a prepaid & confidential documentation service and agree to proceed
+                    with the above details.
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="flex justify-between">
+              <button id="backTo2" class="btn-ghost">← Back</button>
+              <button id="submitBtn" class="btn-primary">Submit request →</button>
+            </div>
+
+            <div id="confirmationBox"
+              class="hidden mt-4 rounded-2xl border border-emerald-500/60 bg-emerald-500/10 px-4 py-4 text-sm space-y-3">
+              <div class="flex items-start gap-3">
+                <div
+                  class="h-8 w-8 rounded-full bg-emerald-500/20 border border-emerald-400 flex items-center justify-center">
+                  ✅
+                </div>
+                <div>
+                  <p class="font-semibold text-emerald-200">Request submitted (demo)</p>
+                  <p class="text-[13px] text-emerald-100 mt-1">
+                    In the live version, this will create an Order ID, push it to your backend/admin panel,
+                    and notify you via WhatsApp/Telegram/email for payment & confirmation.
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-3 rounded-xl border border-sky-500/50 bg-sky-500/10 p-3">
+                <p class="text-[11px] text-sky-100">
+                  Order ke baad bhi changes chahiye? Telegram chat support se kabhi bhi extra
+                  instructions bhej sakte hain.
+                </p>
+                <a href="https://t.me/submitobot" target="_blank"
+                  class="mt-2 inline-flex items-center gap-1.5 rounded-full border border-sky-400/70 bg-black/40 px-3 py-1.5 text-[11px] text-sky-100 hover:bg-sky-500/10">
+                  💬 Open Telegram @submitobot
+                </a>
+              </div>
+
+              <div class="mt-3 border-t border-emerald-500/40 pt-3">
+                <div class="flex items-center justify-between gap-2">
+                  <p class="text-xs text-emerald-100">
+                    Need help or want to add more instructions later?
+                  </p>
+                  <span class="text-[10px] text-emerald-200">
+                    Typical reply time: 2–4 hours
+                  </span>
+                </div>
+                <button id="openHelpChat" class="mt-2 btn-secondary text-xs">
+                  💬 Open order help chat
+                </button>
+
+                <div id="helpChatBox"
+                  class="hidden mt-3 rounded-xl border border-emerald-500/50 bg-black/40 p-3 space-y-2">
+                  <p class="text-[11px] text-gray-200">
+                    Send us a note about this order (changes, extra details, doubts etc.).
+                  </p>
+                  <textarea id="helpChatMessage" rows="3" class="input text-xs"
+                    placeholder="Explain what changes or extra instructions you have..."></textarea>
+                  <button id="sendHelpChat" class="btn-primary text-xs">
+                    Send message
+                  </button>
+                  <p class="text-[10px] text-gray-400 mt-1">
+                    Demo only: This is stored locally. In production, this will attach to your order
+                    in the admin-side conversation.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUMMARY -->
+        <aside class="card h-fit sticky lg:top-20">
+          <h2 class="card-title">Live summary</h2>
+          <p class="hint mt-1">
+            These amounts are auto-estimates based on your selections. Final quote is confirmed manually before payment.
+          </p>
+
+          <div class="mt-3 space-y-2 text-xs sm:text-sm">
+            <div class="row">
+              <span>Document type</span>
+              <span id="summaryDocType" class="value">College assignment</span>
+            </div>
+            <div class="row">
+              <span>Service speed</span>
+              <span id="summaryUrgency" class="value">Normal (~7 days)</span>
+            </div>
+            <div class="row">
+              <span>Estimated pages (auto)</span>
+              <span id="summaryPagesAuto" class="value">0</span>
+            </div>
+            <div class="row">
+              <span>Max pages (billing)</span>
+              <span id="summaryPagesBilling" class="value">0</span>
+            </div>
+            <div class="row">
+              <span>Lab file extra</span>
+              <span id="summaryLabExtra" class="value">₹0</span>
+            </div>
+            <div class="row">
+              <span>Pen selection</span>
+              <span id="summaryPen" class="value">Not selected</span>
+            </div>
+            <div class="row">
+              <span>Style</span>
+              <span id="summaryStyle" class="value">Not selected</span>
+            </div>
+          </div>
+
+          <hr class="divider" />
+
+          <div class="space-y-1 text-xs sm:text-sm">
+            <div class="row">
+              <span>Work (pages × rate)</span>
+              <span id="summaryBase" class="value">₹0</span>
+            </div>
+            <div class="row">
+              <span>Premium add-ons</span>
+              <span id="summaryAddons" class="value">₹0</span>
+            </div>
+            <div class="row">
+              <span>Shipping</span>
+              <span id="summaryDelivery" class="value">+ shipping cost</span>
+            </div>
+          </div>
+
+          <hr class="divider" />
+
+          <div class="flex items-baseline justify-between">
+            <span class="text-xs sm:text-sm text-gray-400">Estimated total</span>
+            <span id="summaryTotal" class="text-sm sm:text-[15px] font-semibold text-emerald-400">
+              ₹0 + shipping
+            </span>
+          </div>
+
+          <p class="hint mt-2">
+            Payment is always taken after you confirm this estimate on WhatsApp/Telegram.
+          </p>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <!-- FLOATING TELEGRAM BUTTON -->
+  <a href="https://t.me/submitobot" target="_blank" class="telegram-fab" aria-label="Telegram support">
+    💬
+  </a>
+
+  <!-- JS -->
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

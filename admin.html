@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>Submito Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="min-h-screen bg-submito text-gray-100">
+  <header class="border-b border-gray-800 bg-black/70 backdrop-blur sticky top-0 z-20">
+    <div class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
+      <a href="index.html" class="flex items-center gap-2">
+        <img src="logo-submito.png" alt="Submito" class="h-8 w-auto" />
+        <div>
+          <div class="font-semibold tracking-wide uppercase text-xs text-gray-400">
+            Submito Admin
+          </div>
+          <div class="text-[11px] text-gray-500">Owner & Team Panel</div>
+        </div>
+      </a>
+      <span class="text-[11px] text-gray-400">Demo – localStorage only</span>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-6 space-y-6">
+    <!-- LOGIN CARD -->
+    <section id="adminLogin" class="card max-w-md mx-auto space-y-4">
+      <h1 class="card-title">Admin / Employee Login</h1>
+      <p class="hint">
+        Owner login for full control, or employee login for limited access.
+      </p>
+
+      <div class="space-y-2 text-xs sm:text-sm">
+        <label class="label">Login type</label>
+        <div class="flex gap-4">
+          <label class="inline-flex items-center gap-1 text-xs">
+            <input type="radio" name="adminRoleType" value="owner" checked class="mr-1" />
+            Owner
+          </label>
+          <label class="inline-flex items-center gap-1 text-xs">
+            <input type="radio" name="adminRoleType" value="employee" class="mr-1" />
+            Employee / Writer
+          </label>
+        </div>
+      </div>
+
+      <div class="space-y-2 text-xs sm:text-sm">
+        <label class="label">Username</label>
+        <input id="adminUsername" type="text" class="input" placeholder="e.g. submito@akaso" />
+      </div>
+      <div class="space-y-2 text-xs sm:text-sm">
+        <label class="label">Password</label>
+        <input id="adminPassword" type="password" class="input" placeholder="••••••••" />
+      </div>
+
+      <button id="adminLoginBtn" class="btn-primary text-xs sm:text-sm w-full justify-center">
+        Login
+      </button>
+
+      <p class="hint text-[11px]">
+        Default owner login: <span class="text-gray-300">submito@akaso</span> / 
+        <span class="text-gray-300">amolaso99</span> (change later from backend).
+      </p>
+    </section>
+
+    <!-- MAIN ADMIN UI -->
+    <section id="adminMain" class="space-y-6 hidden">
+      <div class="flex items-center justify-between gap-2">
+        <h2 class="card-title">Dashboard</h2>
+        <p id="adminRoleLabel" class="text-[11px] text-gray-400"></p>
+      </div>
+
+      <!-- ORDERS -->
+      <section class="card space-y-3">
+        <h3 class="card-title">Orders</h3>
+        <p class="hint">
+          Orders currently stored in browser localStorage. In real setup, connect to your database.
+        </p>
+        <div id="ordersList" class="space-y-3 text-xs sm:text-sm"></div>
+      </section>
+
+      <!-- SETTINGS (OWNER ONLY) -->
+      <section id="ownerSettings" class="card space-y-3">
+        <h3 class="card-title">Pricing & config (owner only)</h3>
+        <p class="hint">
+          Adjust basic pricing and factors. A future backend can sync these to all users.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs sm:text-sm">
+          <div>
+            <label class="label">Normal rate (₹/page)</label>
+            <input id="adminRateStandard" type="number" class="input" />
+          </div>
+          <div>
+            <label class="label">Priority rate (₹/page)</label>
+            <input id="adminRatePriority" type="number" class="input" />
+          </div>
+          <div>
+            <label class="label">PDF factor</label>
+            <input id="adminPdfFactor" type="number" step="0.1" class="input" />
+          </div>
+          <div>
+            <label class="label">Lab file extra (₹)</label>
+            <input id="adminLabExtra" type="number" class="input" />
+          </div>
+        </div>
+
+        <button id="saveAdminSettings" class="btn-primary mt-2 text-xs">
+          Save settings (demo)
+        </button>
+
+        <p class="hint">
+          These are saved in localStorage only. For production, wire to Firestore / backend.
+        </p>
+      </section>
+
+      <!-- EMPLOYEES (OWNER ONLY) -->
+      <section id="ownerEmployees" class="card space-y-3">
+        <h3 class="card-title">Employees / writers (owner only)</h3>
+        <p class="hint">
+          Add limited-access accounts for writers. They can see orders & update status, but can’t edit pricing.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm">
+          <div>
+            <label class="label">Username</label>
+            <input id="empUsername" type="text" class="input" placeholder="e.g. writer1" />
+          </div>
+          <div>
+            <label class="label">Password</label>
+            <input id="empPassword" type="password" class="input" placeholder="••••••" />
+          </div>
+          <div class="flex items-end">
+            <button id="addEmployeeBtn" class="btn-secondary w-full justify-center text-xs">
+              Add employee
+            </button>
+          </div>
+        </div>
+
+        <div id="employeesList" class="mt-2 space-y-1 text-[11px] text-gray-300"></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
